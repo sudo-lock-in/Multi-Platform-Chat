@@ -23,6 +23,7 @@ public class ConsoleClient implements Runnable {
             }
         }
         public static void main(String[] args) throws IOException {
+        System.out.println("Connecting to server...");
         try {
             Socket socket = new Socket("127.0.0.1", 59001);
             ConsoleClient task = new ConsoleClient(socket);
