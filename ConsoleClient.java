@@ -36,8 +36,19 @@ public class ConsoleClient implements Runnable {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             Scanner input = new Scanner(System.in);
             while (true) {
-                if (input.hasNextLine()) out.println(input.nextLine());
+                if (input.hasNextLine()) {
+                    String message = input.nextLine();
+                    if (message.equalsIgnoreCase("QUIT")) {
+                        System.out.println("Disconnecting from server...");
+                        break;
+                    }
+                    out.println(message);
+                }
             }
+            out.close();
+            socket.close();
+            System.out.println("Logged out successfully.");
+            System.exit(0);
         } catch (IOException e) {
             System.out.println("Failed to connect.");
         }
