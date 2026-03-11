@@ -1,4 +1,4 @@
-import javafx.*;
+import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -6,9 +6,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import static javafx.application.Application.launch;
 
-public class ChatApp {
+public class ChatApp extends Application {
     public void start(Stage primaryStage) {
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(20));
@@ -17,6 +16,7 @@ public class ChatApp {
 
         TextField messageBox = new TextField();
         TextArea history = new TextArea();
+        history.setEditable(false);
         Button send = new Button("Send");
 
         grid.add(messageBox, 0, 0);
@@ -24,7 +24,7 @@ public class ChatApp {
         grid.add(history, 0, 3);
         send.setOnAction(e -> {
             String input = messageBox.getText();
-            history.setText(input);
+            history.appendText(input + "\n");
         });
 
         Scene scene = new Scene(grid, 400, 250);
