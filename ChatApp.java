@@ -38,22 +38,11 @@ public class ChatApp extends Application {
         grid.add(messageBox, 0, 4);
         grid.add(send, 0, 5);
         grid.add(history, 0, 6);
-
-        submit.setOnAction(e -> {
-            String IP = ipField.getText();
-            String name = nameField.getText();
-        });
-
-        send.setOnAction(e -> {
-            String input = messageBox.getText();
-            history.appendText(input + "\n");
-        });
-
         Scene scene = new Scene(grid, 400, 250);
         primaryStage.setTitle("Chat App");
         primaryStage.setScene(scene);
         primaryStage.show();
-        gridInit(primaryStage); // Helper to organize your existing layout code
+        gridInit(primaryStage);
     }
 
     private void handleConnect() {
