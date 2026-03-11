@@ -1,46 +1,45 @@
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class ConsoleClient implements Runnable {
-        private Socket socket = null;
-        private Scanner scnr = null;
+    private Socket socket;
+    private Scanner scnr;
+    private Consumer<String> onMessageReceived;
 
-    public ConsoleClient(Socket socket) throws IOException {
+    public ConsoleClient(Socket socket, Consumer<String> onMessageReceived) throws IOException {
         this.socket = socket;
         this.scnr = new Scanner(new InputStreamReader(socket.getInputStream()));
+        this.onMessageReceived = onMessageReceived;
     }
 
     @Override
-        public void run() {
+    public void run() {
         try {
-            String serverMessage;
-            while ((serverMessage = scnr.nextLine()) != null) {
-                System.out.println("Server: " + serverMessage);
+            while (scnr.hasNextLine()) {
+                String serverMessage = scnr.nextLine();
+                onMessageReceived.accept(serverMessage);
             }
         } catch (Exception e) {
-            System.out.println("Lost connection to server.");
-            }
+            onMessageReceived.accept("System: Lost connection to server.");
         }
-        public static void main(String[] args) throws IOException {
+    }
+
+    public static void main(String[] args) throws IOException {
         System.out.println("Connecting to server...");
         try {
             Socket socket = new Socket("127.0.0.1", 59001);
-            ConsoleClient task = new ConsoleClient(socket);
-            Thread client = new Thread(task);
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            Scanner scnr = new Scanner(System.in);
+            ConsoleClient task = new ConsoleClient(socket, System.out::println);
+            new Thread(task).start();
 
-            client.start();
-            System.out.println("Connected to server. Type your messages below:");
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            Scanner input = new Scanner(System.in);
             while (true) {
-                if (scnr.hasNextLine()) {
-                    String input = scnr.nextLine();
-                    out.println(input);
-                }
+                if (input.hasNextLine()) out.println(input.nextLine());
             }
         } catch (IOException e) {
-                System.out.println("Failed to connect.");
-            }
+            System.out.println("Failed to connect.");
         }
     }
+}

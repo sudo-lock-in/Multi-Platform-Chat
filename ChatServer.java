@@ -82,14 +82,11 @@ class ChatServer {
 
       while (true) {
 
-        // Accept a new client connection
-        // We are listening/awaiting for clients in the main thread, so this will block until a client connects
-        var socket = listener.accept(); // blocks until a client connects
+        var socket = listener.accept();
         System.out.println("New client connected: " + socket.getRemoteSocketAddress());
 
-        // how do we handle client communications
-        ClientHandler handler = new ClientHandler(socket); // create a new thread to handle client communication
-        handler.start(); // start the thread to handle client communication
+        ClientHandler handler = new ClientHandler(socket);
+        handler.start();
       }
 
     } catch (IOException e) {
